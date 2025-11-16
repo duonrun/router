@@ -20,7 +20,7 @@ class TestCase extends BaseTestCase
 		$this->root = __DIR__ . '/Fixtures';
 	}
 
-	public function throws(string $exception, string $message = null): void
+	public function throws(string $exception, ?string $message = null): void
 	{
 		$this->expectException($exception);
 

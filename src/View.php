@@ -69,7 +69,7 @@ class View
 	}
 
 	/** @param ?class-string $filter*/
-	public function attributes(string $filter = null): array
+	public function attributes(?string $filter = null): array
 	{
 		if (!isset($this->attributes)) {
 			if (is_callable($this->view)) {
