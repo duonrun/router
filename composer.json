@@ -37,7 +37,7 @@
 		"psr/http-server-middleware": "^1.0"
 	},
 	"require-dev": {
-		"duon/dev": "^1.1",
+		"duon/dev": "dev-main",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
 		"laminas/laminas-diactoros": "^3.3",
 		"phpunit/phpunit": "^12.0",
