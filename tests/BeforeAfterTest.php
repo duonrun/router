@@ -164,9 +164,9 @@ class BeforeAfterTest extends TestCase
 			function (Request $request) {
 				$response = $this->responseFactory()->createResponse()->withHeader('Content-Type', 'text/html');
 				$response->getBody()->write(
-					$request->getAttribute('first') . ' ' .
-					$request->getAttribute('second') . ' ' .
-					$request->getAttribute('third'),
+					$request->getAttribute('first') . ' '
+					. $request->getAttribute('second') . ' '
+					. $request->getAttribute('third'),
 				);
 
 				return $response;

@@ -1,5 +1,4 @@
-Duon Router
-============
+# Duon Router
 
 A PSR-7 compatible router and view dispatcher.
 

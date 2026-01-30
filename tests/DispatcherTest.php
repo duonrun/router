@@ -74,9 +74,9 @@ class DispatcherTest extends TestCase
 			function (Request $request) {
 				$response = $this->responseFactory()->createResponse()->withHeader('Content-Type', 'text/html');
 				$response->getBody()->write(
-					$request->getAttribute('mw1') .
-					'|' . $request->getAttribute('mw2') .
-					'|' . $request->getAttribute('mw3'),
+					$request->getAttribute('mw1')
+					. '|' . $request->getAttribute('mw2')
+					. '|' . $request->getAttribute('mw3'),
 				);
 
 				return $response;

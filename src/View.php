@@ -161,12 +161,12 @@ class View
 
 			if (array_key_exists($name, $routeArgs)) {
 				$args[$name] = match ((string) $param->getType()) {
-					'int' => is_numeric($routeArgs[$name]) ?
-						(int) $routeArgs[$name] :
-						throw new RuntimeException($errMsg . "Cannot cast '{$name}' to int"),
-					'float' => is_numeric($routeArgs[$name]) ?
-						(float) $routeArgs[$name] :
-						throw new RuntimeException($errMsg . "Cannot cast '{$name}' to float"),
+					'int' => is_numeric($routeArgs[$name])
+						? (int) $routeArgs[$name]
+						: throw new RuntimeException($errMsg . "Cannot cast '{$name}' to int"),
+					'float' => is_numeric($routeArgs[$name])
+						? (float) $routeArgs[$name]
+						: throw new RuntimeException($errMsg . "Cannot cast '{$name}' to float"),
 					'string' => $routeArgs[$name],
 					default => $this->resolveUnknown($param, $request, $errMsg),
 				};
@@ -211,7 +211,7 @@ class View
 
 			try {
 				return $this->creator->create($typeName, predefinedTypes: [Request::class => $request]);
-			} catch (NotFoundException | ContainerException  $e) {
+			} catch (NotFoundException|ContainerException  $e) {
 				if ($param->isDefaultValueAvailable()) {
 					return $param->getDefaultValue();
 				}
@@ -221,14 +221,14 @@ class View
 		} else {
 			if ($type) {
 				throw new ContainerException(
-					"Autowiring does not support union or intersection types. Source: \n" .
-						$this->paramInfo($param),
+					"Autowiring does not support union or intersection types. Source: \n"
+						. $this->paramInfo($param),
 				);
 			}
 
 			throw new ContainerException(
-				"Autowired entities need to have typed constructor parameters. Source: \n" .
-					$this->paramInfo($param),
+				"Autowired entities need to have typed constructor parameters. Source: \n"
+					. $this->paramInfo($param),
 			);
 		}
 	}
@@ -243,10 +243,10 @@ class View
 			$rc = $rf->getDeclaringClass();
 		}
 
-		return ($rc ? $rc->getName() . '::' : '') .
-			($rf->getName() . '(..., ') .
-			($type ? (string) $type . ' ' : '') .
-			'$' . $param->getName() . ', ...)';
+		return ($rc ? $rc->getName() . '::' : '')
+			. ($rf->getName() . '(..., ')
+			. ($type ? (string) $type . ' ' : '')
+			. '$' . $param->getName() . ', ...)';
 	}
 
 	public function middleware(): array

@@ -135,8 +135,8 @@ class Route
 			return $this;
 		}
 
-		throw new ValueError('Cannot add controller to view of type Closure or array. ' .
-			'Also, Endpoints cannot be used in a Group which utilises controllers');
+		throw new ValueError('Cannot add controller to view of type Closure or array. '
+			. 'Also, Endpoints cannot be used in a Group which utilises controllers');
 	}
 
 	public function name(): string
