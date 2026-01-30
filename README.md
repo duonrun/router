@@ -11,3 +11,7 @@ $route = $router->match($request);
 $dispatcher = new Dispatcher();
 $response = $dispatcher->dispatch($request, $route);
 ```
+
+## License
+
+This project is licensed under the [MIT license](LICENSE.md).
