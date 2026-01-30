@@ -9,3 +9,7 @@
 /vendor
 __pycache__
 composer.lock
+
+# Local config overrides (not committed)
+/phpunit.xml
+/psalm.xml
