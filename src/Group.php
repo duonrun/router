@@ -9,6 +9,7 @@ use Duon\Router\AddsMiddleware;
 use Duon\Router\AddsRoutes;
 use Duon\Router\Exception\RuntimeException;
 use Duon\Router\RouteAdder;
+use Override;
 
 /** @psalm-api */
 class Group implements RouteAdder
@@ -37,6 +38,7 @@ class Group implements RouteAdder
 		return $this;
 	}
 
+	#[Override]
 	public function addRoute(Route $route): Route
 	{
 		$route->prefix($this->patternPrefix, $this->namePrefix);
@@ -58,6 +60,7 @@ class Group implements RouteAdder
 		throw new RuntimeException('RouteAdder not set');
 	}
 
+	#[Override]
 	public function addGroup(Group $group): void
 	{
 		$group->create($this);

@@ -10,6 +10,7 @@ use Duon\Router\Exception\NotFoundException;
 use Duon\Router\Exception\RuntimeException;
 use Duon\Router\RouteAdder;
 use Duon\Router\StaticRoute;
+use Override;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /** @psalm-api */
@@ -47,6 +48,7 @@ class Router implements RouteAdder
 		$creator($this);
 	}
 
+	#[Override]
 	public function addRoute(Route $route): Route
 	{
 		$name = $route->name();
@@ -75,6 +77,7 @@ class Router implements RouteAdder
 		return $route;
 	}
 
+	#[Override]
 	public function addGroup(Group $group): void
 	{
 		$group->create($this);
