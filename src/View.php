@@ -7,9 +7,7 @@ namespace Duon\Router;
 use Closure;
 use Duon\Router\Exception\RuntimeException;
 use Duon\Wire\Creator;
-use Psr\Container\ContainerExceptionInterface as ContainerException;
 use Psr\Container\ContainerInterface as Container;
-use Psr\Container\NotFoundExceptionInterface as NotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface as Middleware;
@@ -231,7 +229,7 @@ final class View
 
 			try {
 				return $this->creator->create($typeName, predefinedTypes: [Request::class => $request]);
-			} catch (NotFoundException|ContainerException  $e) {
+			} catch (Throwable $e) {
 				if ($param->isDefaultValueAvailable()) {
 					return $param->getDefaultValue();
 				}
