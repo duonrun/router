@@ -9,6 +9,7 @@ use Duon\Router\Route;
 use Duon\Router\Tests\Fixtures\TestAttribute;
 use Duon\Router\Tests\Fixtures\TestAttributeDiff;
 use Duon\Router\Tests\Fixtures\TestAttributeExt;
+use Duon\Router\Tests\Fixtures\TestCallableAttribute;
 use Duon\Router\Tests\Fixtures\TestController;
 use Duon\Router\Tests\Fixtures\TestControllerWithRequest;
 use Duon\Router\Tests\Fixtures\TestControllerWithRequestAndRoute;
@@ -24,6 +25,16 @@ class ViewTest extends TestCase
 		$view = new View($route, null);
 
 		$this->assertInstanceOf(TestAttribute::class, $view->attributes()[0]);
+	}
+
+	public function testAttributeWithCallAttribute(): void
+	{
+		$route = Route::any('/', #[TestCallableAttribute] fn() => 'duon')->after($this->renderer());
+		$view = new View($route, null);
+
+		/** @var TestCallableAttribute $attr */
+		$attr = $view->attributes(TestCallableAttribute::class)[0];
+		$this->assertTrue($attr->initialized);
 	}
 
 	public function testClosure(): void
