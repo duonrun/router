@@ -50,51 +50,51 @@ class Route
 	}
 
 	/** @psalm-param View $view */
-	public static function any(string $pattern, callable|array|string $view, string $name = ''): static
+	public static function any(string $pattern, callable|array|string $view, string $name = ''): self
 	{
-		return (new static($pattern, $view, $name));
+		return (new self($pattern, $view, $name));
 	}
 
 	/** @psalm-param View $view */
-	public static function get(string $pattern, callable|array|string $view, string $name = ''): static
+	public static function get(string $pattern, callable|array|string $view, string $name = ''): self
 	{
-		return (new static($pattern, $view, $name))->method('GET');
+		return (new self($pattern, $view, $name))->method('GET');
 	}
 
 	/** @psalm-param View $view */
-	public static function post(string $pattern, callable|array|string $view, string $name = ''): static
+	public static function post(string $pattern, callable|array|string $view, string $name = ''): self
 	{
-		return (new static($pattern, $view, $name))->method('POST');
+		return (new self($pattern, $view, $name))->method('POST');
 	}
 
 	/** @psalm-param View $view */
-	public static function put(string $pattern, callable|array|string $view, string $name = ''): static
+	public static function put(string $pattern, callable|array|string $view, string $name = ''): self
 	{
-		return (new static($pattern, $view, $name))->method('PUT');
+		return (new self($pattern, $view, $name))->method('PUT');
 	}
 
 	/** @psalm-param View $view */
-	public static function patch(string $pattern, callable|array|string $view, string $name = ''): static
+	public static function patch(string $pattern, callable|array|string $view, string $name = ''): self
 	{
-		return (new static($pattern, $view, $name))->method('PATCH');
+		return (new self($pattern, $view, $name))->method('PATCH');
 	}
 
 	/** @psalm-param View $view */
-	public static function delete(string $pattern, callable|array|string $view, string $name = ''): static
+	public static function delete(string $pattern, callable|array|string $view, string $name = ''): self
 	{
-		return (new static($pattern, $view, $name))->method('DELETE');
+		return (new self($pattern, $view, $name))->method('DELETE');
 	}
 
 	/** @psalm-param View $view */
-	public static function head(string $pattern, callable|array|string $view, string $name = ''): static
+	public static function head(string $pattern, callable|array|string $view, string $name = ''): self
 	{
-		return (new static($pattern, $view, $name))->method('HEAD');
+		return (new self($pattern, $view, $name))->method('HEAD');
 	}
 
 	/** @psalm-param View $view */
-	public static function options(string $pattern, callable|array|string $view, string $name = ''): static
+	public static function options(string $pattern, callable|array|string $view, string $name = ''): self
 	{
-		return (new static($pattern, $view, $name))->method('OPTIONS');
+		return (new self($pattern, $view, $name))->method('OPTIONS');
 	}
 
 	/** @no-named-arguments */

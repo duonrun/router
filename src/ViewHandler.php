@@ -33,6 +33,7 @@ final class ViewHandler implements RequestHandler
 		}
 
 		$middleware = array_shift($this->middleware);
+		assert($middleware instanceof Middleware);
 
 		return $middleware->process($request, $this);
 	}

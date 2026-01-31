@@ -26,15 +26,18 @@ final class View
 
 	protected Creator $creator;
 	protected ?AttributesResolver $attributes = null;
-	protected ?Closure $closure = null;
+
+	/** @var Closure|array{class-string, string} */
 	protected Closure|array $view;
 
+	/**
+	 * @param list<Before> $beforeHandlers
+	 * @param list<After> $afterHandlers
+	 */
 	public function __construct(
 		protected readonly Route $route,
 		protected readonly ?Container $container,
-		/** @param list<Before> */
 		array $beforeHandlers = [],
-		/** @param list<After> */
 		array $afterHandlers = [],
 	) {
 		$this->creator = new Creator($container);
@@ -76,6 +79,8 @@ final class View
 				$this->attributes = new AttributesResolver([getReflectionFunction($this->view)], $this->container);
 			} else {
 				[$controller, $method] = $this->view;
+				assert(is_string($controller) && class_exists($controller));
+				assert(is_string($method));
 				$reflectionClass = new ReflectionClass($controller);
 				$this->attributes = new AttributesResolver([
 					$reflectionClass,
@@ -120,6 +125,8 @@ final class View
 		}
 
 		[$controllerName, $method] = $this->view;
+		assert(is_string($controllerName) && class_exists($controllerName));
+		assert(is_string($method));
 		$rc = new ReflectionClass($controllerName);
 		$constructor = $rc->getConstructor();
 		$args = $constructor ? $this->getArgs($constructor, $request) : [];
@@ -128,9 +135,9 @@ final class View
 		if (method_exists($controller, $method)) {
 			return Closure::fromCallable([$controller, $method]);
 		}
-		$view = $controllerName . '::' . $method;
+		$viewString = $controllerName . '::' . $method;
 
-		throw new RuntimeException("View method not found {$view}");
+		throw new RuntimeException("View method not found {$viewString}");
 	}
 
 	/**
@@ -190,7 +197,9 @@ final class View
 				return $param->getDefaultValue();
 			}
 
-			throw new RuntimeException($errMsg . $e->getMessage(), $e->getCode(), $e);
+			$code = $e->getCode();
+
+			throw new RuntimeException($errMsg . $e->getMessage(), is_int($code) ? $code : 0, $e);
 		}
 	}
 
