@@ -52,49 +52,49 @@ class Route
 	/** @psalm-param View $view */
 	public static function any(string $pattern, callable|array|string $view, string $name = ''): static
 	{
-		return (new self($pattern, $view, $name));
+		return (new static($pattern, $view, $name));
 	}
 
 	/** @psalm-param View $view */
 	public static function get(string $pattern, callable|array|string $view, string $name = ''): static
 	{
-		return (new self($pattern, $view, $name))->method('GET');
+		return (new static($pattern, $view, $name))->method('GET');
 	}
 
 	/** @psalm-param View $view */
 	public static function post(string $pattern, callable|array|string $view, string $name = ''): static
 	{
-		return (new self($pattern, $view, $name))->method('POST');
+		return (new static($pattern, $view, $name))->method('POST');
 	}
 
 	/** @psalm-param View $view */
 	public static function put(string $pattern, callable|array|string $view, string $name = ''): static
 	{
-		return (new self($pattern, $view, $name))->method('PUT');
+		return (new static($pattern, $view, $name))->method('PUT');
 	}
 
 	/** @psalm-param View $view */
 	public static function patch(string $pattern, callable|array|string $view, string $name = ''): static
 	{
-		return (new self($pattern, $view, $name))->method('PATCH');
+		return (new static($pattern, $view, $name))->method('PATCH');
 	}
 
 	/** @psalm-param View $view */
 	public static function delete(string $pattern, callable|array|string $view, string $name = ''): static
 	{
-		return (new self($pattern, $view, $name))->method('DELETE');
+		return (new static($pattern, $view, $name))->method('DELETE');
 	}
 
 	/** @psalm-param View $view */
 	public static function head(string $pattern, callable|array|string $view, string $name = ''): static
 	{
-		return (new self($pattern, $view, $name))->method('HEAD');
+		return (new static($pattern, $view, $name))->method('HEAD');
 	}
 
 	/** @psalm-param View $view */
 	public static function options(string $pattern, callable|array|string $view, string $name = ''): static
 	{
-		return (new self($pattern, $view, $name))->method('OPTIONS');
+		return (new static($pattern, $view, $name))->method('OPTIONS');
 	}
 
 	/** @no-named-arguments */
@@ -175,18 +175,20 @@ class Route
 				// TODO: throw error if args do not match url params
 				if (is_scalar($value) or ($value instanceof Stringable)) {
 					// basic variables
-					$url = preg_replace(
+					$replaced = preg_replace(
 						'/\{' . (string) $name . '(:.*?)?\}/',
 						urlencode((string) $value),
 						$url,
 					);
+					$url = $replaced ?? $url;
 
 					// remainder variables
-					$url = preg_replace(
+					$replaced = preg_replace(
 						'/\.\.\.' . (string) $name . '/',
 						urlencode((string) $value),
 						$url,
 					);
+					$url = $replaced ?? $url;
 				} else {
 					throw new InvalidArgumentException('No valid url argument');
 				}
@@ -301,20 +303,24 @@ class Route
 
 		// Escape forward slashes
 		//     /evil/chuck  to \/evil\/chuck
-		$pattern = preg_replace('/\//', '\\/', $pattern);
+		$replaced = preg_replace('/\//', '\\/', $pattern);
+		$pattern = $replaced ?? $pattern;
 
 		$pattern = $this->hideInnerBraces($pattern);
 
 		// Convert variables to named group patterns
 		//     /evil/{chuck}  to  /evil/(?P<chuck>[\w-]+)
-		$pattern = preg_replace('/\{(\w+?)\}/', '(?P<\1>[.\w-]+)', $pattern);
+		$replaced = preg_replace('/\{(\w+?)\}/', '(?P<\1>[.\w-]+)', $pattern);
+		$pattern = $replaced ?? $pattern;
 
 		// Convert variables with custom patterns e.g. {evil:\d+}
 		//     /evil/{chuck:\d+}  to  /evil/(?P<chuck>\d+)
-		$pattern = preg_replace('/\{(\w+?):(.+?)\}/', '(?P<\1>\2)', $pattern);
+		$replaced = preg_replace('/\{(\w+?):(.+?)\}/', '(?P<\1>\2)', $pattern);
+		$pattern = $replaced ?? $pattern;
 
 		// Convert remainder pattern ...slug to (?P<slug>.*)
-		$pattern = preg_replace('/\.\.\.(\w+?)$/', '(?P<\1>.*)', $pattern);
+		$replaced = preg_replace('/\.\.\.(\w+?)$/', '(?P<\1>.*)', $pattern);
+		$pattern = $replaced ?? $pattern;
 
 		$pattern = '/^' . $pattern . '$/';
 
