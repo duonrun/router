@@ -42,21 +42,27 @@ final class View
 	) {
 		$this->creator = new Creator($container);
 		$this->view = $this->prepareView($route->view());
-		$this->setBeforeHandlers($this->mergeHandlers($beforeHandlers, $route->beforeHandlers()));
-		$this->setAfterHandlers($this->mergeHandlers($afterHandlers, $route->afterHandlers()));
+		$this->setBeforeHandlers($this->doMergeBeforeHandlers($beforeHandlers, $route->beforeHandlers()));
+		$this->setAfterHandlers($this->doMergeAfterHandlers($afterHandlers, $route->afterHandlers()));
 	}
 
 	public function execute(Request $request): Response
 	{
 		$closure = $this->getClosure($request);
 
-		foreach ($this->mergeBeforeHandlers($this->attributes(Before::class)) as $handler) {
+		/** @var list<Before> $beforeAttributes */
+		$beforeAttributes = $this->attributes(Before::class);
+		foreach ($this->mergeBeforeHandlers($beforeAttributes) as $handler) {
 			$request = $handler->handle($request);
 		}
 
+		/** @var mixed $result */
 		$result = ($closure)(...$this->getArgs(getReflectionFunction($closure), $request));
 
-		foreach ($this->mergeAfterHandlers($this->attributes(After::class)) as $handler) {
+		/** @var list<After> $afterAttributes */
+		$afterAttributes = $this->attributes(After::class);
+		foreach ($this->mergeAfterHandlers($afterAttributes) as $handler) {
+			/** @var mixed $result */
 			$result = $handler->handle($result);
 		}
 
@@ -79,8 +85,6 @@ final class View
 				$this->attributes = new AttributesResolver([getReflectionFunction($this->view)], $this->container);
 			} else {
 				[$controller, $method] = $this->view;
-				assert(is_string($controller) && class_exists($controller));
-				assert(is_string($method));
 				$reflectionClass = new ReflectionClass($controller);
 				$this->attributes = new AttributesResolver([
 					$reflectionClass,
@@ -92,6 +96,7 @@ final class View
 		return $this->attributes->get($filter);
 	}
 
+	/** @return Closure|array{class-string, string} */
 	protected function prepareView(callable|string|array $view): Closure|array
 	{
 		if (is_callable($view)) {
@@ -112,6 +117,7 @@ final class View
 		}
 
 		if (class_exists($controllerName)) {
+			/** @var class-string $controllerName */
 			return [$controllerName, $method];
 		}
 
@@ -125,8 +131,6 @@ final class View
 		}
 
 		[$controllerName, $method] = $this->view;
-		assert(is_string($controllerName) && class_exists($controllerName));
-		assert(is_string($method));
 		$rc = new ReflectionClass($controllerName);
 		$constructor = $rc->getConstructor();
 		$args = $constructor ? $this->getArgs($constructor, $request) : [];
@@ -216,6 +220,13 @@ final class View
 
 			if ($typeName === Route::class || is_subclass_of($typeName, Route::class)) {
 				return $this->route;
+			}
+
+			if (!class_exists($typeName) && !interface_exists($typeName)) {
+				throw new RuntimeException(
+					"Type '{$typeName}' is not a class or interface. Source: \n"
+						. $this->paramInfo($param),
+				);
 			}
 
 			try {

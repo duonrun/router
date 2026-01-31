@@ -10,6 +10,7 @@ use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/** @psalm-api */
 final class Dispatcher
 {
 	use AddsBeforeAfter;

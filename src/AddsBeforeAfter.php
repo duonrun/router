@@ -32,7 +32,7 @@ trait AddsBeforeAfter
 	 */
 	public function mergeBeforeHandlers(array $beforeHandlers): array
 	{
-		return $this->mergeHandlers($this->beforeHandlers, $beforeHandlers);
+		return $this->doMergeBeforeHandlers($this->beforeHandlers, $beforeHandlers);
 	}
 
 	/** @psalm-param list<Before> $beforeHandlers */
@@ -63,7 +63,7 @@ trait AddsBeforeAfter
 	 */
 	public function mergeAfterHandlers(array $afterHandlers): array
 	{
-		return $this->mergeHandlers($this->afterHandlers, $afterHandlers);
+		return $this->doMergeAfterHandlers($this->afterHandlers, $afterHandlers);
 	}
 
 	/** @psalm-param list<After> $afterHandlers */
@@ -75,12 +75,41 @@ trait AddsBeforeAfter
 	}
 
 	/**
-	 * @template T of Before|After
-	 * @param list<T> $handlers
-	 * @param list<T> $newHandlers
-	 * @return list<T>
+	 * @param list<Before> $handlers
+	 * @param list<Before> $newHandlers
+	 * @return list<Before>
 	 */
-	protected function mergeHandlers(array $handlers, array $newHandlers): array
+	protected function doMergeBeforeHandlers(array $handlers, array $newHandlers): array
+	{
+		foreach ($newHandlers as $handler) {
+			$replaced = false;
+			$result = [];
+
+			foreach ($handlers as $h) {
+				if (!$replaced && $h->replace($handler)) {
+					$replaced = true;
+					$result[] = $handler;
+				} else {
+					$result[] = $h;
+				}
+			}
+
+			$handlers = $result;
+
+			if (!$replaced) {
+				$handlers[] = $handler;
+			}
+		}
+
+		return $handlers;
+	}
+
+	/**
+	 * @param list<After> $handlers
+	 * @param list<After> $newHandlers
+	 * @return list<After>
+	 */
+	protected function doMergeAfterHandlers(array $handlers, array $newHandlers): array
 	{
 		foreach ($newHandlers as $handler) {
 			$replaced = false;
