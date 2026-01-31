@@ -14,6 +14,7 @@ use Duon\Router\Tests\Fixtures\TestController;
 use Duon\Router\Tests\Fixtures\TestControllerWithRequest;
 use Duon\Router\Tests\Fixtures\TestControllerWithRequestAndRoute;
 use Duon\Router\Tests\Fixtures\TestControllerWithRoute;
+use Duon\Router\Tests\Fixtures\TestUnresolvableClass;
 use Duon\Router\View;
 use GdImage;
 
@@ -251,5 +252,34 @@ class ViewTest extends TestCase
 		$this->assertSame(2, count($view->attributes(TestAttribute::class)));
 		$this->assertSame(1, count($view->attributes(TestAttributeExt::class)));
 		$this->assertSame(1, count($view->attributes(TestAttributeDiff::class)));
+	}
+
+	public function testViewWithUnionTypeParam(): void
+	{
+		$this->throws(RuntimeException::class, 'does not support union or intersection types');
+
+		$route = Route::any('/', fn(string|int $param) => $param)->after($this->renderer());
+		$view = new View($route, null);
+		$view->execute($this->request());
+	}
+
+	public function testViewWithUntypedParam(): void
+	{
+		$this->throws(RuntimeException::class, 'need to have typed constructor parameters');
+
+		$route = Route::any('/', fn($param) => $param)->after($this->renderer());
+		$view = new View($route, null);
+		$view->execute($this->request());
+	}
+
+	public function testViewWithUnresolvableParamAndDefault(): void
+	{
+		// When a param cannot be autowired but has a default value, the default should be used
+		$route = Route::any('/', fn(?TestUnresolvableClass $param = null) => $param)->after($this->renderer());
+		$view = new View($route, null);
+		$response = $view->execute($this->request());
+
+		// Default value (null) is used because TestUnresolvableClass can't be autowired
+		$this->assertSame('', (string) $response->getBody());
 	}
 }
