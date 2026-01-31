@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Duon\Router\Tests;
 
 use Duon\Router\Endpoint;
+use Duon\Router\Exception\RuntimeException;
 use Duon\Router\Router;
 use Duon\Router\Tests\Fixtures\TestEndpoint;
 
@@ -185,5 +186,13 @@ class EndpointTest extends TestCase
 		$this->assertSame('/endpoints/{id}/{category}', $route->pattern());
 		$this->assertSame([TestEndpoint::class, 'put'], $route->view());
 		$this->assertSame(['id' => '13', 'category' => 'albums'], $route->args());
+	}
+
+	public function testEndpointWithNonexistentController(): void
+	{
+		$this->throws(RuntimeException::class, 'does not exist');
+
+		$router = new Router();
+		new Endpoint($router, '/endpoints', 'NonexistentController', 'id');
 	}
 }
