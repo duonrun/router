@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface as Middleware;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
-class ViewHandler implements RequestHandler
+final class ViewHandler implements RequestHandler
 {
 	/** @param list<Middleware> $middleware */
 	protected array $middleware;

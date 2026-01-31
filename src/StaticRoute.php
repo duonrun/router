@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Router;
 
-class StaticRoute
+final class StaticRoute
 {
 	public function __construct(
 		public readonly string $prefix,

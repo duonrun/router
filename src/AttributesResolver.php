@@ -13,7 +13,7 @@ use ReflectionClass;
 use ReflectionFunctionAbstract;
 use ReflectionObject;
 
-class AttributesResolver
+final class AttributesResolver
 {
 	protected readonly array $attributes;
 

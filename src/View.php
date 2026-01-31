@@ -20,7 +20,7 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use Throwable;
 
-class View
+final class View
 {
 	use AddsBeforeAfter;
 
