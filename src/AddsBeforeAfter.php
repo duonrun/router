@@ -6,12 +6,13 @@ namespace Duon\Router;
 
 trait AddsBeforeAfter
 {
-	/** @psalm-var list<Before> */
+	/** @var list<Before> */
 	protected array $beforeHandlers = [];
 
-	/** @psalm-var list<After> */
+	/** @var list<After> */
 	protected array $afterHandlers = [];
 
+	/** @psalm-api */
 	public function before(Before $beforeHandler): static
 	{
 		$this->beforeHandlers = $this->mergeBeforeHandlers([$beforeHandler]);
@@ -42,6 +43,7 @@ trait AddsBeforeAfter
 		return $this;
 	}
 
+	/** @psalm-api */
 	public function after(After $afterHandler): static
 	{
 		$this->afterHandlers = $this->mergeAfterHandlers([$afterHandler]);
@@ -74,23 +76,26 @@ trait AddsBeforeAfter
 
 	/**
 	 * @template T of Before|After
-	 * @psalm-param list<T> $handlers
-	 * @psalm-param list<T> $newHandlers
+	 * @param list<T> $handlers
+	 * @param list<T> $newHandlers
 	 * @return list<T>
 	 */
 	protected function mergeHandlers(array $handlers, array $newHandlers): array
 	{
 		foreach ($newHandlers as $handler) {
 			$replaced = false;
-			$handlers = array_map(function ($h) use ($handler, &$replaced) {
+			$result = [];
+
+			foreach ($handlers as $h) {
 				if (!$replaced && $h->replace($handler)) {
 					$replaced = true;
-
-					return $handler;
+					$result[] = $handler;
+				} else {
+					$result[] = $h;
 				}
+			}
 
-				return $h;
-			}, $handlers);
+			$handlers = $result;
 
 			if (!$replaced) {
 				$handlers[] = $handler;
