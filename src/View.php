@@ -220,13 +220,13 @@ final class View
 			}
 		} else {
 			if ($type) {
-				throw new ContainerException(
+				throw new RuntimeException(
 					"Autowiring does not support union or intersection types. Source: \n"
 						. $this->paramInfo($param),
 				);
 			}
 
-			throw new ContainerException(
+			throw new RuntimeException(
 				"Autowired entities need to have typed constructor parameters. Source: \n"
 					. $this->paramInfo($param),
 			);
