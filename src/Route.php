@@ -242,7 +242,7 @@ class Route
 
 	protected function hideInnerBraces(string $str): string
 	{
-		if (strpos($str, '\{') || strpos($str, '\}')) {
+		if (strpos($str, '\{') !== false || strpos($str, '\}') !== false) {
 			throw new ValueError('Escaped braces are not allowed: ' . $this->pattern);
 		}
 

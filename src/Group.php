@@ -43,7 +43,7 @@ class Group implements RouteAdder
 	{
 		$route->prefix($this->patternPrefix, $this->namePrefix);
 
-		if ($this->controller) {
+		if ($this->controller !== null) {
 			$route->controller($this->controller);
 		}
 

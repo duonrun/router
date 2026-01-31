@@ -119,8 +119,9 @@ class Router implements RouteAdder
 
 		if ($bust) {
 			// Check if there is already a query parameter present
-			if (strpos($path, '?')) {
-				$file = strtok($path, '?');
+			if (strpos($path, '?') !== false) {
+				$filePart = strtok($path, '?');
+				$file = $filePart !== false ? $filePart : $path;
 				$sep = '&';
 			} else {
 				$file = $path;
@@ -134,7 +135,7 @@ class Router implements RouteAdder
 			}
 		}
 
-		return ($host ? trim($host, '/') : '') . $route->prefix . trim($path, '/');
+		return ($host !== null ? trim($host, '/') : '') . $route->prefix . trim($path, '/');
 	}
 
 	public function routeUrl(string $__routeName__, mixed ...$args): string
@@ -194,8 +195,8 @@ class Router implements RouteAdder
 		$ds = DIRECTORY_SEPARATOR;
 		$file = realpath($dir . $ds . ltrim(str_replace('/', $ds, $path), $ds));
 
-		if ($file) {
-			return hash('xxh32', (string) filemtime($file)) ?? '';
+		if ($file !== false) {
+			return hash('xxh32', (string) filemtime($file));
 		}
 
 		return '';
